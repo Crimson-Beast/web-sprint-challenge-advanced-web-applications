@@ -1,12 +1,14 @@
 import axios from 'axios';
+import { useHistory } from 'react-router';
 import axiosWithAuth from '../utils/axiosWithAuth';
+
 
 const articleService = () => { 
     axiosWithAuth()
-    .get(`http://localhost:5000/api/articles/${id}`)
+    .get(`http://localhost:5000/api/articles`)
     .then(res => {
-        props.setArticles(res.data)
-        PushManager('/articles')
+        return res.data
+        console.log(res.data)
     })
     .catch(err => console.log(err))
 }

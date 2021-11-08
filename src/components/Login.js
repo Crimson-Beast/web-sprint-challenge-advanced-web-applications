@@ -34,7 +34,7 @@ const Login = () => {
         axios.post('http://localhost:5000/api/login', state)
         .then(res => {
             console.log(res)
-            localStorage.setItem('token', res.data.payload)
+            localStorage.setItem('token', res.data.token)
             push('/view')
         })
         .catch(err => {
