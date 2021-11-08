@@ -1,6 +1,14 @@
+import axios from 'axios';
+import axiosWithAuth from '../utils/axiosWithAuth';
 
-
-const articleService = ()=> {
+const articleService = () => { 
+    axiosWithAuth()
+    .get(`http://localhost:5000/api/articles/${id}`)
+    .then(res => {
+        props.setArticles(res.data)
+        PushManager('/articles')
+    })
+    .catch(err => console.log(err))
 }
 
 export default articleService;

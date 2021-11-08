@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios'
+import axiosWithAuth from '../utils/axiosWithAuth';
+import { useHistory } from 'react-router';
 
 
-const Login = (props) => {
+const Login = () => {
 
     // let state = {
     //     credentials: {
@@ -12,31 +14,28 @@ const Login = (props) => {
     //     }
     // };
 
-    const [state, setState] = useState({
-        credentials: {
-            username: '',
-            password: ''
-    }})
+    const [state, setState] = useState({ username: '', password: ''})
 
     const [err, setErr] = useState('')
+    
+    const { push } = useHistory()
 
     const handleChange = e => {
         setState({
-            credentials: {
-                ...state.credentials,
-                [e.target.name]: e.target.value
-            }
+            ...state,
+            [e.target.name]: e.target.value 
         })
     };
 
     const login = e => {
         e.preventDefault();
-        // console.log(state.credentials)
-        axios.post('', state.credentials)
+        console.log(state)
+        axiosWithAuth()
+        axios.post('http://localhost:5000/api/login', state)
         .then(res => {
             console.log(res)
             localStorage.setItem('token', res.data.payload)
-            props.history.push('/view')
+            push('/view')
         })
         .catch(err => {
             console.log(err.data)
@@ -56,7 +55,7 @@ const Login = (props) => {
                         type='text'
                         name='username'
                         placeholder='Username'
-                        value={state.credentials.username}
+                        value={state.username}
                         onChange={handleChange}
                     />
                     <Input
@@ -64,7 +63,7 @@ const Login = (props) => {
                         type='password'
                         name='password'
                         placeholder='Password'
-                        value={state.credentials.password}
+                        value={state.password}
                         onChange={handleChange}
                     />
                     <Button id='submit'>Log In</Button>
