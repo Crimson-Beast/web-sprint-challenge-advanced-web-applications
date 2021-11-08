@@ -1,12 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios'
+import axiosWithAuth from '../utils/axiosWithAuth';
+import { useHistory } from 'react-router';
+
 
 const Login = () => {
+
+    // let state = {
+    //     credentials: {
+    //         username: '',
+    //         password: ''
+    //     }
+    // };
+
+    const [state, setState] = useState({ username: '', password: ''})
+
+    const [err, setErr] = useState('')
+    
+    const { push } = useHistory()
+
+    const handleChange = e => {
+        setState({
+            ...state,
+            [e.target.name]: e.target.value 
+        })
+    };
+
+    const login = e => {
+        e.preventDefault();
+        console.log(state)
+        axiosWithAuth()
+        axios.post('http://localhost:5000/api/login', state)
+        .then(res => {
+            console.log(res)
+            localStorage.setItem('token', res.data.payload)
+            push('/view')
+        })
+        .catch(err => {
+            console.log(err.data)
+            setErr('oops somthing went wrong. Make sure to input both username and password,  and that they are correct')
+        })
+    }
     
     return(<ComponentContainer>
         <ModalContainer>
             <h1>Welcome to Blogger Pro</h1>
             <h2>Please enter your account information.</h2>
+            <ErrMessage id='error'>{err}</ErrMessage>
+            <div>
+                <form onSubmit={login}>
+                    <Input
+                        id='username'
+                        type='text'
+                        name='username'
+                        placeholder='Username'
+                        value={state.username}
+                        onChange={handleChange}
+                    />
+                    <Input
+                        id='password'
+                        type='password'
+                        name='password'
+                        placeholder='Password'
+                        value={state.password}
+                        onChange={handleChange}
+                    />
+                    <Button id='submit'>Log In</Button>
+                </form>
+            </div>
         </ModalContainer>
     </ComponentContainer>);
 }
@@ -22,7 +84,7 @@ export default Login;
 //6. MAKE SURE TO ADD id="username", id="password", id="error" AND id="submit" TO THE APPROPRIATE DOM ELEMENTS. YOUR AUTOTESTS WILL FAIL WITHOUT THEM.
 
 const ComponentContainer = styled.div`
-    height: 70%;
+    height: 80%;
     justify-content: center;
     align-items: center;
     display:flex;
@@ -54,4 +116,7 @@ const Input = styled.input`
 const Button = styled.button`
     padding:1rem;
     width: 100%;
+`
+const ErrMessage = styled.p`
+    color: red;
 `
